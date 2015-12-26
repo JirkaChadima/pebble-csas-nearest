@@ -5,12 +5,12 @@
   "companyName": "Jirka Chadima",
   "versionLabel": "0.1",
   "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt", "chalk"],
+  "targetPlatforms": ["chalk"],
   "watchapp": {
     "watchface": false
   },
   "appKeys": {
-    "dummy": 0
+    "location": 0
   },
   "resources": {
     "media": []
