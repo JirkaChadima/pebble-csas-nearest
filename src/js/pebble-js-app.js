@@ -40,8 +40,8 @@ function computeBearing(source, destination) {
 function getNearestATMs() {
     navigator.geolocation.getCurrentPosition(
         function (position) {
+            console.log(JSON.stringify(position));
             xhrRequest('https://api.csas.cz/sandbox/webapi/api/v2/places?radius=500&country=CZ&types=ATM&limit=1&lat=' + position.coords.latitude + '&lng=' + position.coords.longitude, 'GET', '7f29f5d5-c9d4-4266-8e6b-3733064da146', function (status, data) {
-                console.log(JSON.stringify(position.coords));
                 console.log(status);
                 console.log(data);
                 var response = {};
@@ -64,9 +64,9 @@ function getNearestATMs() {
             });
         },
         function (error) {
-            console.log(error);
+            console.log('geolocation API error: ' + JSON.stringify(error));
         },
-        {timeout: 15000, maximumAge: 60000}
+        {timeout: 2000, maximumAge: 60000, enableHighAccuracy: false}
     );
 }
 

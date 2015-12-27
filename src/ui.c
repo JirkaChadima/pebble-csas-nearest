@@ -1,9 +1,6 @@
 #include "main.h"
 #include "layers.h"
 
-static Window * main_window;
-static TextLayer * splash_layer;
-
 static Window * detail_window;
 static TextLayer * address_layer;
 static TextLayer * distance_layer;
@@ -14,26 +11,6 @@ static char distance_buffer[8];
 static char direction_buffer[8];
 static int watch_direction;
 static int place_direction;
-
-static void main_window_load(Window *window) {
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
-  splash_layer = create_splash_layer(bounds);
-  layer_add_child(window_layer, text_layer_get_layer(splash_layer));
-}
-
-static void main_window_unload(Window *window) {
-  text_layer_destroy(splash_layer);
-}
-
-static Window * main_window_init() {
-  Window * window = window_create();
-  window_set_window_handlers(window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload
-  });
-  return window;
-}
 
 static void detail_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
@@ -87,7 +64,7 @@ static void detail_window_set_place(Place place) {
 
 void ui_model_changed_callback(Place place) {
   if(place.empty) {
-    text_layer_set_text(splash_layer, "No ATM nearby");
+    text_layer_set_text(address_layer, "No ATM nearby");
   } else {
     window_stack_push(detail_window, true);
     detail_window_set_place(place);
@@ -100,12 +77,10 @@ void ui_bearing_changed_callback(int new_direction) {
 }
 
 void ui_init() {
-  main_window = main_window_init();
   detail_window = detail_window_init();
-  window_stack_push(main_window, true);
+  window_stack_push(detail_window, true);
 }
 
 void ui_destroy() {
-  window_destroy(main_window);
   window_destroy(detail_window);
 }
