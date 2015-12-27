@@ -9,6 +9,10 @@
 #ifndef MAIN_DEFINED
 #define MAIN_DEFINED
 
+typedef struct Arrow {
+  int direction;
+} Arrow;
+
 typedef struct Place {
   bool empty;
   int distance;

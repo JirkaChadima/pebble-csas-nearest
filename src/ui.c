@@ -4,11 +4,11 @@
 static Window * detail_window;
 static TextLayer * address_layer;
 static TextLayer * distance_layer;
-static TextLayer * direction_layer;
+static Layer * direction_layer;
 static TextLayer * hours_layer;
 
 static char distance_buffer[8];
-static char direction_buffer[8];
+//static char direction_buffer[8];
 static int watch_direction;
 static int place_direction;
 
@@ -22,13 +22,13 @@ static void detail_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(address_layer));
   layer_add_child(window_layer, text_layer_get_layer(distance_layer));
   layer_add_child(window_layer, text_layer_get_layer(hours_layer));
-  layer_add_child(window_layer, text_layer_get_layer(direction_layer));
+  layer_add_child(window_layer, direction_layer);
 }
 
 static void detail_window_unload(Window *window) {
   text_layer_destroy(address_layer);
   text_layer_destroy(distance_layer);
-  text_layer_destroy(direction_layer);
+  layer_destroy(direction_layer);
   text_layer_destroy(hours_layer);
 }
 
@@ -46,8 +46,9 @@ static void write_direction_to_ui() {
     return;
   }
   int new_direction = ((place_direction - watch_direction) + 360) % 360;
-  snprintf(direction_buffer, sizeof(direction_buffer), "%d", new_direction);
-  text_layer_set_text(direction_layer, direction_buffer);
+  Arrow* arrow = (Arrow*) layer_get_data(direction_layer);
+  arrow->direction = new_direction;
+  layer_mark_dirty(direction_layer);
 }
 
 static void detail_window_set_place(Place place) {
