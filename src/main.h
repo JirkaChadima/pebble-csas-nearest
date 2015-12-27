@@ -13,8 +13,8 @@ typedef struct Place {
   bool empty;
   int distance;
   int direction;
-  char address[100];
-  char access_type[100];
+  char * address;
+  char * hours;
 } Place;
 
 #endif

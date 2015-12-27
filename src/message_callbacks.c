@@ -2,7 +2,7 @@
 
 static void (*model_changed)(Place place);
 
-void message_callbacks_register(void (*callback)(Place place)) {
+void message_callbacks_register_ui(void (*callback)(Place place)) {
   model_changed = callback;
 }
 
@@ -40,7 +40,7 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context) {
       nearest.address = address_tuple->value->cstring;
     }
     if (access_tuple) {
-      nearest.access = access_tuple->value->cstring;
+      nearest.hours = access_tuple->value->cstring;
     }
   }
   model_changed(nearest);
