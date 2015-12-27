@@ -1,31 +1,35 @@
 'use strict';
 
-var xhrRequest = function (url, type, callback) {
+var xhrRequest = function (url, type, key, callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
-        callback(this.responseText);
+        callback(this.status, this.responseText);
     };
     xhr.open(type, url);
-    console.log('opened');
+    xhr.setRequestHeader('WEB-API-Key', key);
     xhr.send();
-    console.log('sent');
 }
 
-function getWeather() {
+function getNearestATMs() {
     navigator.geolocation.getCurrentPosition(
         function (position) {
-            var url = 'http://api.openweathermap.org/data/2.5/weather?units=Metric&lat=' + position.coords.latitude + '&lon=' + position.coords.longitude + '&appid=371c06ec7e9768c022f1fee13147a7f5';
-            xhrRequest(url, 'GET', function (data) {
+            xhrRequest('https://api.csas.cz/sandbox/webapi/api/v2/places?radius=500&country=CZ&types=ATM&limit=1&lat=' + position.coords.latitude + '&lng=' + position.coords.longitude, 'GET', '7f29f5d5-c9d4-4266-8e6b-3733064da146', function (status, data) {
+                console.log(status);
                 console.log(data);
-                var json = JSON.parse(data);
-                Pebble.sendAppMessage({
-                    'KEY_TEMPERATURE': Math.round(json.main.temp),
-                    'KEY_CONDITIONS': json.weather[0].main
-                }, function (e) {
-                    console.log('sent to pebble');
-                }, function (e) {
-                    console.log('error sending to pebble');
-                });
+                var response = {};
+                if (status != 200) {
+                    response['KEY_NOT_FOUND'] = true;
+                } else {
+                    var json = JSON.parse(data).items[0];
+                    response = {
+                        'KEY_DISTANCE': json.distance,
+                        'KEY_DIRECTION': 12, // TODO compute from position.coords.latitude, position.coords.longitude, json.location.lat, json.location.lng
+                        'KEY_ADDRESS': json.address + ', ' + json.city,
+                        'KEY_ACCESS_TYPE': json.accessType
+                    };
+                }
+                console.log("sending: " + JSON.stringify(response));
+                Pebble.sendAppMessage(response);
             });
         },
         function (error) {
@@ -36,11 +40,9 @@ function getWeather() {
 }
 
 Pebble.addEventListener('ready', function (e) {
-    console.log('Pebble JSKit ready')
-    getWeather();
+    getNearestATMs();
 });
 
-Pebble.addEventListener('appmessage', function (e) {
-    console.log('App message received');
-    getWeather();
-});
+//Pebble.addEventListener('appmessage', function (e) {
+    //getNearestATMs();
+//});

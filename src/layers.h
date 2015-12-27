@@ -1,4 +1,3 @@
 #include <main.h>
 
-TextLayer * createTimeLayer(GRect bounds);
-TextLayer * createWeatherLayer(GRect bounds);
+TextLayer * create_splash_layer(GRect bounds);
