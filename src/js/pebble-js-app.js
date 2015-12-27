@@ -74,6 +74,6 @@ Pebble.addEventListener('ready', function (e) {
     getNearestATMs();
 });
 
-//Pebble.addEventListener('appmessage', function (e) {
-    //getNearestATMs();
-//});
+Pebble.addEventListener('appmessage', function (e) {
+    getNearestATMs();
+});
