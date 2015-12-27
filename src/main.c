@@ -21,14 +21,18 @@ static void init(void) {
 
   compass_service_subscribe(compass_handler);
   compass_service_set_heading_filter(TRIG_MAX_ANGLE / 36);
+
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
   ui_init();
   message_callbacks_register_ui(ui_model_changed_callback);
+  compass_register_ui(ui_bearing_changed_callback);
 }
 
 static void deinit() {
   ui_destroy();
+  compass_service_unsubscribe();
+  tick_timer_service_unsubscribe();
 }
 
 int main() {

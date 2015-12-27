@@ -1,8 +1,8 @@
 #include <pebble.h>
 
-static void (*bearing_changed)(int newBearing);
+static void (*bearing_changed)(int new_direction);
 
-void compass_register_ui(void (*callback)(int newBearing)) {
+void compass_register_ui(void (*callback)(int new_direction)) {
   bearing_changed = callback;
 }
 

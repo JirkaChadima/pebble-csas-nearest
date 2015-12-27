@@ -12,6 +12,8 @@ static TextLayer * hours_layer;
 
 static char distance_buffer[8];
 static char direction_buffer[8];
+static int watch_direction;
+static int place_direction;
 
 static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
@@ -62,16 +64,25 @@ static Window * detail_window_init() {
   return window;
 }
 
+static void write_direction_to_ui() {
+  if (!detail_window || !direction_layer || !watch_direction || !place_direction) {
+    return;
+  }
+  int new_direction = ((place_direction - watch_direction) + 360) % 360;
+  snprintf(direction_buffer, sizeof(direction_buffer), "%d", new_direction);
+  text_layer_set_text(direction_layer, direction_buffer);
+}
+
 static void detail_window_set_place(Place place) {
   if (!detail_window) {
     detail_window = detail_window_init();
   }
   text_layer_set_text(address_layer, place.address);
   snprintf(distance_buffer, sizeof(distance_buffer), "%d m", place.distance);
+  place_direction = place.direction;
   text_layer_set_text(distance_layer, distance_buffer);
-  snprintf(direction_buffer, sizeof(direction_buffer), "%d", place.direction);
-  text_layer_set_text(direction_layer, direction_buffer);
   text_layer_set_text(hours_layer, place.hours);
+  write_direction_to_ui();
 }
 
 void ui_model_changed_callback(Place place) {
@@ -81,6 +92,11 @@ void ui_model_changed_callback(Place place) {
     window_stack_push(detail_window, true);
     detail_window_set_place(place);
   }
+}
+
+void ui_bearing_changed_callback(int new_direction) {
+  watch_direction = new_direction;
+  write_direction_to_ui();
 }
 
 void ui_init() {
