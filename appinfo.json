@@ -1,7 +1,7 @@
 {
   "uuid": "6330169d-cdbc-4075-8229-ff1ccb92d03e",
-  "shortName": "pebble-csas-nearest",
-  "longName": "pebble-csas-nearest",
+  "shortName": "ČS ATM",
+  "longName": "Nejbližší bankomat ČS",
   "companyName": "Jirka Chadima",
   "versionLabel": "0.1",
   "sdkVersion": "3",
@@ -20,6 +20,13 @@
     "KEY_NOT_FOUND": 4
   },
   "resources": {
-    "media": []
+    "media": [
+      {
+        "menuIcon": true,
+        "type": "bitmap",
+        "name": "IMAGE_MENU_ICON",
+        "file": "images/app-logo.png"
+      }
+    ]
   }
 }
